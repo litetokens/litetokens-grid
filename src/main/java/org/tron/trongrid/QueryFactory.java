@@ -106,6 +106,7 @@ public class QueryFactory {
         this.setTimestampGreaterEqual(timestamp);
         if (blocknum >= 0)
             this.setBocknumberGreaterEqual(blocknum);
+
     }
 
     public void setBetweenTime(long from, long to){

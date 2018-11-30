@@ -3,6 +3,8 @@ package org.tron.trongrid;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,25 +24,23 @@ public class EventLogController {
   @Autowired
   MongoTemplate mongoTemplate;
 
+  Logger logger = LoggerFactory.getLogger(EventLogController.class);
+
 
   @RequestMapping(method = RequestMethod.GET, value = "/healthcheck")
   public String  healthCheck(){
     return "OK";
   }
 
-  @RequestMapping(method = RequestMethod.GET, value = "/events")
-  public List<EventLogEntity> events(HttpServletRequest request) {
-
-    Query query = QueryFactory.intialize(request).getQuery();
-    System.out.println(query.toString());
-    List<EventLogEntity> result = mongoTemplate.find(query,EventLogEntity.class);
-    return result;
-
-  }
 
   @RequestMapping(method = RequestMethod.GET, value = "/event/transaction/{transactionId}")
   public List<EventLogEntity> findOneByTransaction(@PathVariable String transactionId) {
-    return eventLogRepository.findByTransactionId(transactionId);
+    long startTime = System.nanoTime();
+    List<EventLogEntity> result = eventLogRepository.findByTransactionId(transactionId);
+    long endTime   = System.nanoTime();
+    long totalTime = endTime - startTime;
+    logger.info("DEBUG: /event/transaction/ takes {} nano seconds", String.valueOf(totalTime));
+    return result;
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/event/contract/{contractAddress}")
@@ -48,14 +48,17 @@ public class EventLogController {
                                                     @RequestParam(value="since", required=false, defaultValue = "0" ) long timestamp,
                                                     @RequestParam(value="block", required=false, defaultValue = "-1" ) long blocknum,
                                                     HttpServletRequest request) {
+    long startTime = System.nanoTime();
     QueryFactory query = new QueryFactory(timestamp, blocknum);
     query.setContractAddress(contractAddress);
     query.setPageniate(this.setPagniateVariable(request));
     System.out.println(query.toString());
-    List<EventLogEntity> result = mongoTemplate.find(query.getQuery(),EventLogEntity.class);
+    List<EventLogEntity> result = mongoTemplate.find(query.getQuery(),EventLogEntity.class,contractAddress);
+    long endTime   = System.nanoTime();
+    long totalTime = endTime - startTime;
+    logger.info("DEBUG: /event/contract/ takes {} nano seconds", String.valueOf(totalTime));
     return result;
-//    return eventLogRepository.findByBlockTimestampAndContractAddressGreaterThan(timestamp, contractAddress,
-//            this.setPagniateVariable(request));
+
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/event/contract/{contractAddress}/{eventName}")
@@ -66,18 +69,18 @@ public class EventLogController {
           @RequestParam(value="block", required=false, defaultValue = "-1" ) long blocknum,
           HttpServletRequest request) {
 
+    long startTime = System.nanoTime();
     QueryFactory query = new QueryFactory(timestamp, blocknum);
     query.setContractAddress(contractAddress);
     query.setEventName(eventName);
     query.setPageniate(this.setPagniateVariable(request));
     System.out.println(query.toString());
-    List<EventLogEntity> result = mongoTemplate.find(query.getQuery(),EventLogEntity.class);
+    List<EventLogEntity> result = mongoTemplate.find(query.getQuery(),EventLogEntity.class,contractAddress);
+    long endTime   = System.nanoTime();
+    long totalTime = endTime - startTime;
+    logger.info("DEBUG: /event/contract/event takes {} nano seconds", String.valueOf(totalTime));
     return result;
 
-//    return eventLogRepository.findByContractAndEventSinceTimestamp(contractAddress,
-//            eventName,
-//            timestamp,
-//            this.setPagniateVariable(request));
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/event/contract/{contractAddress}/{eventName}/{blockNumber}")
@@ -86,16 +89,17 @@ public class EventLogController {
       @PathVariable String eventName,
       @PathVariable long blockNumber) {
 
+    long startTime = System.nanoTime();
     QueryFactory query = new QueryFactory();
     query.setContractAddress(contractAddress);
     query.setEventName(eventName);
     System.out.println(query.toString());
     query.setBockNum(blockNumber);
-    List<EventLogEntity> result = mongoTemplate.find(query.getQuery(),EventLogEntity.class);
+    List<EventLogEntity> result = mongoTemplate.find(query.getQuery(),EventLogEntity.class, contractAddress);
+    long endTime   = System.nanoTime();
+    long totalTime = endTime - startTime;
+    logger.info("DEBUG: /event/contract/event/blocknumber takes {} nano seconds", String.valueOf(totalTime));
     return result;
-
-//    return eventLogRepository
-//            .findByContractAddressAndEntryNameAndBlockNumber(contractAddress, eventName, blockNumber);
 
   }
 
@@ -108,7 +112,7 @@ public class EventLogController {
           @RequestParam(value="since", required=false, defaultValue = "0" ) Long since_timestamp,
           @RequestParam(value="block", required=false, defaultValue = "-1" ) long blocknum,
           HttpServletRequest request){
-
+    long startTime = System.nanoTime();
     Query query = new Query();
     query.addCriteria(Criteria.where("contract_address").is(contractAddress));
     query.addCriteria(Criteria.where("event_name").is(eventName));
@@ -134,23 +138,11 @@ public class EventLogController {
 
     query.with(this.setPagniateVariable(request));
     System.out.println(query.toString());
-    List<EventLogEntity> result = mongoTemplate.find(query,EventLogEntity.class);
+    List<EventLogEntity> result = mongoTemplate.find(query,EventLogEntity.class, contractAddress);
+    long endTime   = System.nanoTime();
+    long totalTime = endTime - startTime;
+    logger.debug("/event/filter takes {} nano seconds", String.valueOf(totalTime));
     return result;
-  }
-
-  @RequestMapping(method = RequestMethod.GET, value = "/event/timestamp")
-  public List<EventLogEntity> findByBlockTimestampGreaterThan(
-          @RequestParam(value="contract", required=false) String contract_address,
-          @RequestParam(value="since", required=false, defaultValue = "0" ) Long timestamp,
-          HttpServletRequest request) {
-
-    this.setPagniateVariable(request);
-
-    if (contract_address == null || contract_address.length() == 0)
-      return eventLogRepository.findByBlockTimestampGreaterThan(timestamp, this.setPagniateVariable(request));
-
-    return eventLogRepository.findByBlockTimestampAndContractAddressGreaterThan(timestamp, contract_address, this.setPagniateVariable(request));
-
   }
 
   private Pageable setPagniateVariable(HttpServletRequest request){
