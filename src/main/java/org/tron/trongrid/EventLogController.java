@@ -82,7 +82,7 @@ public class EventLogController {
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/eventall/contract/{contractAddress}/{eventName}")
-  public List<EventLogEntity> findByContractAddressAndEntryName(
+  public List<EventLogEntity> findByContractAddressAndEntryName_compare(
           @PathVariable String contractAddress,
           @PathVariable String eventName,
           @RequestParam(value="since", required=false, defaultValue = "0" ) long timestamp,
