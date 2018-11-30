@@ -81,6 +81,27 @@ public class EventLogController {
 
   }
 
+  @RequestMapping(method = RequestMethod.GET, value = "/eventall/contract/{contractAddress}/{eventName}")
+  public List<EventLogEntity> findByContractAddressAndEntryName(
+          @PathVariable String contractAddress,
+          @PathVariable String eventName,
+          @RequestParam(value="since", required=false, defaultValue = "0" ) long timestamp,
+          @RequestParam(value="block", required=false, defaultValue = "-1" ) long blocknum,
+          HttpServletRequest request) {
+
+    long startTime = System.nanoTime();
+    QueryFactory query = QueryFactory.intialize(request);
+    query.setContractAddress(contractAddress);
+    query.setEventName(eventName);
+    System.out.println(query.toString());
+    List<EventLogEntity> result = mongoTemplate.find(query.getQuery(),EventLogEntity.class);
+    long endTime   = System.nanoTime();
+    long totalTime = endTime - startTime;
+    logger.info("DEBUG: /eventall/contract/event takes {} nano seconds", String.valueOf(totalTime));
+    return result;
+
+  }
+
   @RequestMapping(method = RequestMethod.GET, value = "/event/contract/{contractAddress}/{eventName}/{blockNumber}")
   public List<EventLogEntity> findByContractAddressAndEntryNameAndBlockNumber(
       @PathVariable String contractAddress,
