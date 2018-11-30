@@ -21,7 +21,7 @@ public class TransferController {
     @RequestMapping(method = RequestMethod.GET, value = "/totaltransfers")
     public Long totaltransfers() {
 
-        JSONObject result = this.getResponse(this.url);
+        JSONObject result = this.getResponse(this.url+"?count=true");
         return result.getLong("total");
     }
 

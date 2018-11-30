@@ -4,22 +4,19 @@ Tron-Grid uses SpringBoot to provide a query interface. It takes Java-Tron and w
 
 ```
 https://github.com/tronprotocol/java-tron
-test_ev2分支
+event_parser branch
 based on：org.tron.core.db.Manager#sendEventLog
 ```
 
 
 ## The Following are Four Methods for Polling:
 ### 1.  By Contract Address:<br>
-    curl https://api.shasta.trongrid.io/event/contract/TMJnJcHfdP5rhmXVkwRYb1a9A6gS46PUm6 or
-    curl https://api.shasta.trongrid.io/event/timestamp?contract=TMJnJcHfdP5rhmXVkwRYb1a9A6gS46PUm6
+    curl https://api.shasta.trongrid.io/event/contract/TMJnJcHfdP5rhmXVkwRYb1a9A6gS46PUm6
     
     By default, its gonna return the latest 50 events. If you want to return the latest event:
-    curl https://api.shasta.trongrid.io/event/timestamp?contract=TMJnJcHfdP5rhmXVkwRYb1a9A6gS46PUm6&size=1 or
     curl https://api.shasta.trongrid.io/event/contract/TMJnJcHfdP5rhmXVkwRYb1a9A6gS46PUm6?size=1
     
     if you want to return the second latest event,
-    curl https://api.shasta.trongrid.io/event/timestamp?contract=TMJnJcHfdP5rhmXVkwRYb1a9A6gS46PUm6&size=1&page=2 or
     curl https://api.shasta.trongrid.io/event/contract/TMJnJcHfdP5rhmXVkwRYb1a9A6gS46PUm6?size=1&page=2
 ### 2.  By Contract Address and Event Name:<br>
     curl https://api.trongrid.io/event/contract/TMJnJcHfdP5rhmXVkwRYb1a9A6gS46PUm6/Notify
@@ -35,6 +32,18 @@ based on：org.tron.core.db.Manager#sendEventLog
 curl https://api.trongrid.io/event/transaction/5c3747ffa94fc87a2188708a9e0758cbd01f000d3d01f6589651921930183f6a
 <br>
 
+## Request Parameters:<br>
+    since: set a time stamp, default 0, returning all events after that timestamp
+    EX: curl https://api.trongrid.io/event/contract/TMJnJcHfdP5rhmXVkwRYb1a9A6gS46PUm6/Notify?since=1541547888000
+    
+    size: number of results return. Default is 20, maximum is 200
+    EX: curl https://api.trongrid.io/event/contract/TMJnJcHfdP5rhmXVkwRYb1a9A6gS46PUm6/Notify?size=10
+    
+    page: page number
+    EX: curl https://api.trongrid.io/event/contract/TMJnJcHfdP5rhmXVkwRYb1a9A6gS46PUm6/Notify?size=10&page=2
+    gonna return latest 11 - 20th results
+    
+    sort: block_timestamp(Ascending order) or -block_timestamp(Descending order), sort result by block_timestamp
 An Example Contract:
 ```
 pragma solidity ^0.4.23;
