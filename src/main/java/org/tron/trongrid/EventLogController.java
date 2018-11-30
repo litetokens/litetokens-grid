@@ -29,15 +29,11 @@ public class EventLogController {
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/events")
-  public List<EventLogEntity> events(
-          @RequestParam(value="since", required=false, defaultValue = "0" ) long timestamp,
-          @RequestParam(value="block", required=false, defaultValue = "-1" ) long blocknum,
-          HttpServletRequest request) {
+  public List<EventLogEntity> events(HttpServletRequest request) {
 
-    QueryFactory query = new QueryFactory(timestamp, blocknum);
-    query.setPageniate(this.setPagniateVariable(request));
+    Query query = QueryFactory.intialize(request).getQuery();
     System.out.println(query.toString());
-    List<EventLogEntity> result = mongoTemplate.find(query.getQuery(),EventLogEntity.class);
+    List<EventLogEntity> result = mongoTemplate.find(query,EventLogEntity.class);
     return result;
 
   }
@@ -180,5 +176,6 @@ public class EventLogController {
     return QueryFactory.make_pagination(Math.max(0,page-1),Math.min(200,page_size),sort);
 
   }
+
 
 }
