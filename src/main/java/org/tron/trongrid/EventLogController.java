@@ -50,7 +50,7 @@ public class EventLogController {
                                                     HttpServletRequest request) {
     long startTime = System.nanoTime();
     QueryFactory query = QueryFactory.intialize(request);
-    query.setContractAddress(contractAddress);
+//    query.setContractAddress(contractAddress);
     System.out.println(query.toString());
     List<EventLogEntity> result = mongoTemplate.find(query.getQuery(),EventLogEntity.class,contractAddress);
     long endTime   = System.nanoTime();
@@ -70,7 +70,7 @@ public class EventLogController {
 
     long startTime = System.nanoTime();
     QueryFactory query = QueryFactory.intialize(request);
-    query.setContractAddress(contractAddress);
+//    query.setContractAddress(contractAddress);
     query.setEventName(eventName);
     System.out.println(query.toString());
     List<EventLogEntity> result = mongoTemplate.find(query.getQuery(),EventLogEntity.class,contractAddress);
@@ -110,7 +110,7 @@ public class EventLogController {
 
     long startTime = System.nanoTime();
     QueryFactory query = new QueryFactory();
-    query.setContractAddress(contractAddress);
+//    query.setContractAddress(contractAddress);
     query.setEventName(eventName);
     System.out.println(query.toString());
     query.setBockNum(blockNumber);
