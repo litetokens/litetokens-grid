@@ -1,6 +1,6 @@
 # Litetokens-Grid
 
-Tron-Grid uses SpringBoot to provide a query interface. The user can poll the Smart Contract's details. Refer to the following link for Java Tron details:   
+Litetokens-Grid uses SpringBoot to provide a query interface. The user can poll the Smart Contract's details. Refer to the following link for Java Litetokens details:   
 
 ```
 https://github.com/tronprotocol/java-tron
