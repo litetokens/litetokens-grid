@@ -1,4 +1,4 @@
-package org.tron.trongrid;
+package org.litetokens.litetokensgrid;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,4 +1,4 @@
-package org.tron.trongrid;
+package org.litetokens.litetokensgrid;
 
 import org.apache.catalina.connector.Connector;
 import org.springframework.boot.SpringApplication;
@@ -13,10 +13,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 @SpringBootApplication
-public class TrongridApplication {
+public class LitetokensgridApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TrongridApplication.class, args);
+		SpringApplication.run(LitetokensgridApplication.class, args);
 	}
 
 	@Bean

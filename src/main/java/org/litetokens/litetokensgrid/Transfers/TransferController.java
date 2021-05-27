@@ -1,4 +1,4 @@
-package org.tron.trongrid.Transfers;
+package org.litetokens.litetokensgrid.Transfers;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSONArray;
 
 @RestController
 @Component
-@PropertySource("classpath:tronscan.properties")
+@PropertySource("classpath:litetokensscan.properties")
 public class TransferController {
 
     @Value("${url.transfers}")
