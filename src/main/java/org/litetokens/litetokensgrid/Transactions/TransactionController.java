@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSONArray;
 
 @RestController
 @Component
-@PropertySource("classpath:litetokensscan.properties")
+@PropertySource("classpath:litescan.properties")
 public class TransactionController {
     @Value("${url.transaction}")
     private String url;
